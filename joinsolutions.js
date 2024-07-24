@@ -40,13 +40,13 @@ const joinImages = (folder, amountSolutions) => {
                             top: Math.floor(index / cols) * height,
                             left: (index % cols) * width
                         })))
-                        .extract({
-                            left: 0,
-                            top: 0,
-                            width: 4430,
-                            height: 6350
-                        })
-                        .toFile(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`));
+                    .extract({
+                        left: 0,
+                        top: 0,
+                        width: 4430,
+                        height: 6350
+                    })
+                    .toFile(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`));
                 })
                 .then(() => {
                     console.log(`Created solution-page-${i / amountSolutions + 1}.png`);
