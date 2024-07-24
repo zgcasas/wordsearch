@@ -33,15 +33,20 @@ const joinImages = (folder, amountSolutions) => {
                             width: cols * width,
                             height: rows * height,
                             channels: 4,
-                            background: { r: 0, g: 0, b: 0, alpha: 0 }
-                        }
-                    })
-                        .composite(buffers.map((buffer, index) => ({
+                            background: { r: 255, g: 255, b: 255, alpha: 1 }
+                        },
+                    }).composite(buffers.map((buffer, index) => ({
                             input: buffer,
                             top: Math.floor(index / cols) * height,
                             left: (index % cols) * width
                         })))
-                        .toFile(path.join(folder, `solution-page-${i / amountSolutions + 1}.png`));
+                        .extract({
+                            left: 0,
+                            top: 0,
+                            width: 4430,
+                            height: 6350
+                        })
+                        .toFile(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`));
                 })
                 .then(() => {
                     console.log(`Created solution-page-${i / amountSolutions + 1}.png`);
