@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.4",
+    "canvas": "^2.11.2",
+    "svg-builder": "^2.0.0",
+    "svgdom": "^0.1.19",
+    "potrace": "^2.1.8",
+    "sharp": "^0.33.4"
+  },
+  "type": "module"
+}
