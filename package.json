@@ -2,10 +2,12 @@
   "dependencies": {
     "@svgdotjs/svg.js": "^3.2.4",
     "canvas": "^2.11.2",
-    "svg-builder": "^2.0.0",
-    "svgdom": "^0.1.19",
+    "imagetracerjs": "^1.2.6",
+    "pngjs": "^7.0.0",
     "potrace": "^2.1.8",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "svg-builder": "^2.0.0",
+    "svgdom": "^0.1.19"
   },
   "type": "module"
 }

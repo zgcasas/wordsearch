@@ -20,7 +20,7 @@ if (!fs.existsSync(outputDir)) {
 // Function to process each image file
 const processImage = async (inputFilePath, outputFilePath) => {
     try {
-        var params = { threshold: 180, steps: [40, 85, 135, 180] };
+        var params = { steps: 4, color: true };
         const svg = await trace(inputFilePath, params);
         fs.writeFileSync(outputFilePath, svg);
         console.log(`Processed: ${inputFilePath}`);

@@ -65,10 +65,10 @@ function createWordSearch(words, size) {
 
 function createImage(grid, words, filename, solutions = []) {
   const size = grid.length;
-  const cellSize = 30;
-  const padding = 20;
+  const cellSize = 100;
+  const padding = 66.66;
   const width = size * cellSize + padding * 2;
-  const height = (size + 2) * cellSize + padding * 2 + words.length * 20;
+  const height = (size + 2) * cellSize + padding * 2 + words.length * 35;
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
@@ -87,22 +87,27 @@ function createImage(grid, words, filename, solutions = []) {
       const y = padding + i * cellSize;
       ctx.strokeRect(x, y, cellSize, cellSize);
       ctx.fillStyle = 'black';
-      ctx.fillText(grid[i][j], x + cellSize / 4.7, y + cellSize / 1.4);
+      if (grid[i][j] === 'I') {
+        ctx.fillText(grid[i][j], x + cellSize / 2.9, y + cellSize / 1.4);
+      } else {
+        ctx.fillText(grid[i][j], x + cellSize / 4.7, y + cellSize / 1.4);
+      }
+
     }
   }
 
   // Draw the words list
   const listSize = 10;
+  const columns = 3;
   let newColumnPadding = padding;
   for (let i = 0; i < words.length; i += listSize) {
-    console.log(i, padding);
     if (i >= listSize) {
-      newColumnPadding = padding + 200;
+      newColumnPadding += padding + (width / columns);
     }
     const chunk = words.slice(i, i + listSize);
     chunk.forEach((word, index) => {
       const x = newColumnPadding;
-      const y = padding + (size + 1) * cellSize + index * 20;
+      const y = padding + (size + 1) * cellSize + index * 90;
       ctx.fillText(word, x, y);
     });
   }
@@ -145,19 +150,25 @@ function createWordSearchWithSolution(words, size, counter = 0) {
     }
   });
   createImage(grid, words, `output/wordsearch-${counter}.png`);
+  console.log(`Created output/wordsearch-${counter}.png`)
   createImage(grid, words, `output/solution-${counter}.png`, solutions);
+  console.log(`Created output/solution-${counter}.png`)
 }
 
 const words = JSON.parse(fs.readFileSync('words.json', 'utf8'));
 const size = 20;
 
 
+// Create crosswords in chunks
 const chunkSize = 20;
 let page = 1;
 for (let i = 0; i < words.length; i += chunkSize) {
   const chunk = words.slice(i, i + chunkSize);
   createWordSearchWithSolution(chunk, size, page);
   page++;
-  program.stop()
 }
+
+// join solutions
+
+
 
