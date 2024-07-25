@@ -48,6 +48,13 @@ const joinImages = (folder, amountSolutions) => {
                     })
                     .toFile(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`));
                 })
+                .then(async () => {
+                    // let buffer = await sharp(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`))
+                    //     .resize(3000)
+                    //     .toBuffer();
+                    // return sharp(buffer)
+                    //     .toFile(path.join(folder, `page-solution-${i / amountSolutions + 1}.png`));
+                })
                 .then(() => {
                     console.log(`Created solution-page-${i / amountSolutions + 1}.png`);
                 })

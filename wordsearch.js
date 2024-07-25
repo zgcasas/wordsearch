@@ -152,8 +152,8 @@ function createImage(grid, words, rawWords, filename, solutions = [], category, 
 }
 
 function createWordSearchWithSolution(words, category, size, counter = 0) {
-  const rawWords = words;
-  words = cleanWords(words);
+  const rawWords = upperCaseWords(words);
+  words = upperCaseWords(cleanWords(words));
   const grid = createWordSearch(words, size);
   const solutions = words.map(word => {
     for (let dir = 0; dir < DIRECTIONS.length; dir++) {
@@ -175,9 +175,13 @@ function createWordSearchWithSolution(words, category, size, counter = 0) {
 function cleanWords(words){
   return words.map(word => {
     // Remove non-alphanumeric characters using regex
-    let cleanedWord = word.replace(/[^a-zA-Z0-9]/g, '');
-    // Convert to uppercase
-    return cleanedWord.toUpperCase();
+    return word.replace(/[^a-zA-Z0-9]/g, '');
+  });
+}
+
+function upperCaseWords(words){
+  return words.map(word => {
+    return word.toUpperCase();
   });
 }
 
