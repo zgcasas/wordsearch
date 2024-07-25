@@ -1,5 +1,5 @@
 import fs from 'fs';
-import {CanvasGradient, createCanvas} from 'canvas';
+import {createCanvas} from 'canvas';
 
 const DIRECTIONS = [
   [0, 1], [1, 0], [1, 1], [-1, -1], [0, -1], [-1, 0], [1, -1], [-1, 1]
@@ -63,12 +63,14 @@ function createWordSearch(words, size) {
   return grid;
 }
 
-function createImage(grid, words, filename, solutions = []) {
+function createImage(grid, words, filename, solutions = [], category, page) {
   const size = grid.length;
+  const startingOfTitle = 120;
+  const startingOfRectangles = 200;
   const cellSize = 100;
   const padding = 66.66;
   const width = size * cellSize + padding * 2;
-  const height = (size + 2) * cellSize + padding * 2 + words.length * 35;
+  const height = (size + 2) * cellSize + padding + startingOfTitle * 2 + 20 * 35;
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
@@ -78,15 +80,20 @@ function createImage(grid, words, filename, solutions = []) {
 
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 1;
-  ctx.font = `${cellSize / 1.5}px Courier`;
 
+  ctx.font = `${cellSize}px Impact`;
+  ctx.fillStyle = 'black';
+  const title = `${category} #${page}`;
+  ctx.fillText(title, (width - ctx.measureText(title).width) / 2 , startingOfTitle);
+
+  ctx.font = `${cellSize / 1.5}px Courier`;
+  ctx.fillStyle = 'black';
   // Draw the grid and letters
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       const x = padding + j * cellSize;
-      const y = padding + i * cellSize;
+      const y = padding + i * cellSize + startingOfRectangles;
       ctx.strokeRect(x, y, cellSize, cellSize);
-      ctx.fillStyle = 'black';
       if (grid[i][j] === 'I') {
         ctx.fillText(grid[i][j], x + cellSize / 2.9, y + cellSize / 1.4);
       } else {
@@ -102,12 +109,12 @@ function createImage(grid, words, filename, solutions = []) {
   let newColumnPadding = padding;
   for (let i = 0; i < words.length; i += listSize) {
     if (i >= listSize) {
-      newColumnPadding += padding + (width / columns);
+      newColumnPadding += padding + (width / columns) - 100;
     }
     const chunk = words.slice(i, i + listSize);
     chunk.forEach((word, index) => {
       const x = newColumnPadding;
-      const y = padding + (size + 1) * cellSize + index * 90;
+      const y = padding + startingOfRectangles + (size + 1) * cellSize + index * 90;
       ctx.fillText(word, x, y);
     });
   }
@@ -136,7 +143,8 @@ function createImage(grid, words, filename, solutions = []) {
   fs.writeFileSync(filename, buffer);
 }
 
-function createWordSearchWithSolution(words, size, counter = 0) {
+function createWordSearchWithSolution(words, category, size, counter = 0) {
+  words = cleanWords(words);
   const grid = createWordSearch(words, size);
   const solutions = words.map(word => {
     for (let dir = 0; dir < DIRECTIONS.length; dir++) {
@@ -149,26 +157,32 @@ function createWordSearchWithSolution(words, size, counter = 0) {
       }
     }
   });
-  createImage(grid, words, `output/wordsearch-${counter}.png`);
+  createImage(grid, words, `output/wordsearch-${counter}.png`,[], category, counter);
   console.log(`Created output/wordsearch-${counter}.png`)
-  createImage(grid, words, `output/solution-${counter}.png`, solutions);
+  createImage(grid, words, `output/solution-${counter}.png`, solutions, category, counter);
   console.log(`Created output/solution-${counter}.png`)
 }
 
-const words = JSON.parse(fs.readFileSync('words.json', 'utf8'));
+function cleanWords(words){
+  return words.map(word => {
+    // Remove non-alphanumeric characters using regex
+    let cleanedWord = word.replace(/[^a-zA-Z0-9]/g, '');
+    // Convert to uppercase
+    return cleanedWord.toUpperCase();
+  });
+}
+
+const categories = JSON.parse(fs.readFileSync('words.json', 'utf8'));
 const size = 20;
 
 
-// Create crosswords in chunks
-const chunkSize = 20;
+// Create crosswords from categories
 let page = 1;
-for (let i = 0; i < words.length; i += chunkSize) {
-  const chunk = words.slice(i, i + chunkSize);
-  createWordSearchWithSolution(chunk, size, page);
+for (const [category, words] of Object.entries(categories)) {
+  createWordSearchWithSolution(words, category, size, page);
   page++;
 }
 
-// join solutions
 
 
 

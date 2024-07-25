@@ -3,4 +3,4 @@
 - `node wordsearch.js`
 - `node joinsolutions.js`
 - `node vector.js`
-- Get the `wordsearch-x.svg` and `solution-page-x.svg` in order
+- Get the `wordsearch-x.svg` and `page-solution-x.svg` in order
