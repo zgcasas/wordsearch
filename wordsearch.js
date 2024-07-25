@@ -47,9 +47,11 @@ function fillGrid(grid) {
 
 function createWordSearch(words, size) {
   const grid = createGrid(size);
+  const MAX_ATTEMPTS = 10000;  // Maximum attempts to place a word
   for (const word of words) {
     let placed = false;
-    while (!placed) {
+    let attempts = 0;
+    while (!placed && attempts < MAX_ATTEMPTS) {
       const dir = getRandomInt(DIRECTIONS.length);
       const row = getRandomInt(size);
       const col = getRandomInt(size);
@@ -57,13 +59,18 @@ function createWordSearch(words, size) {
         placeWord(grid, word, row, col, dir);
         placed = true;
       }
+      attempts++;
+    }
+    if (!placed) {
+      console.error(`Unable to place the word: ${word} after ${MAX_ATTEMPTS} attempts. Retrying...`);
+      return createWordSearch(words, size);
     }
   }
   fillGrid(grid);
   return grid;
 }
 
-function createImage(grid, words, filename, solutions = [], category, page) {
+function createImage(grid, words, rawWords, filename, solutions = [], category, page) {
   const size = grid.length;
   const startingOfTitle = 120;
   const startingOfRectangles = 200;
@@ -99,7 +106,6 @@ function createImage(grid, words, filename, solutions = [], category, page) {
       } else {
         ctx.fillText(grid[i][j], x + cellSize / 4.7, y + cellSize / 1.4);
       }
-
     }
   }
 
@@ -111,7 +117,7 @@ function createImage(grid, words, filename, solutions = [], category, page) {
     if (i >= listSize) {
       newColumnPadding += padding + (width / columns) - 100;
     }
-    const chunk = words.slice(i, i + listSize);
+    const chunk = rawWords.slice(i, i + listSize);
     chunk.forEach((word, index) => {
       const x = newColumnPadding;
       const y = padding + startingOfRectangles + (size + 1) * cellSize + index * 90;
@@ -130,7 +136,7 @@ function createImage(grid, words, filename, solutions = [], category, page) {
       const [dx, dy] = DIRECTIONS[dir];
       for (let i = 0; i < word.length; i++) {
         const x = padding + (startCol + i * dy) * cellSize + cellSize / 2;
-        const y = padding + (startRow + i * dx) * cellSize + cellSize / 2;
+        const y = padding + startingOfRectangles + (startRow + i * dx) * cellSize + cellSize / 2;
         ctx.beginPath();
         ctx.arc(x, y, cellSize / 2, 0, 2 * Math.PI);
         ctx.fill()
@@ -144,6 +150,7 @@ function createImage(grid, words, filename, solutions = [], category, page) {
 }
 
 function createWordSearchWithSolution(words, category, size, counter = 0) {
+  const rawWords = words;
   words = cleanWords(words);
   const grid = createWordSearch(words, size);
   const solutions = words.map(word => {
@@ -157,9 +164,9 @@ function createWordSearchWithSolution(words, category, size, counter = 0) {
       }
     }
   });
-  createImage(grid, words, `output/wordsearch-${counter}.png`,[], category, counter);
+  createImage(grid, words, rawWords, `output/wordsearch-${counter}.png`,[], category, counter);
   console.log(`Created output/wordsearch-${counter}.png`)
-  createImage(grid, words, `output/solution-${counter}.png`, solutions, category, counter);
+  createImage(grid, words, rawWords, `output/solution-${counter}.png`, solutions, category, counter);
   console.log(`Created output/solution-${counter}.png`)
 }
 
