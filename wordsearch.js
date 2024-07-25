@@ -110,6 +110,7 @@ function createImage(grid, words, rawWords, filename, solutions = [], category, 
   }
 
   // Draw the words list
+  ctx.font = `${cellSize / 1.7}px Courier`;
   const listSize = 10;
   const columns = 3;
   let newColumnPadding = padding;
@@ -127,6 +128,7 @@ function createImage(grid, words, rawWords, filename, solutions = [], category, 
 
 
   // Draw the solution
+  ctx.font = `${cellSize / 1.5}px Courier`;
   if (solutions.length > 0) {
     ctx.strokeStyle = 'grey';
     ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
