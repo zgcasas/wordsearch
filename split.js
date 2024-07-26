@@ -36,7 +36,7 @@ async function processJson(inputFilePath, wordsPerChunk) {
 
     // Write each chunk to a new JSON file
     for (let i = 0; i < outputChunks.length; i++) {
-        const outputFilePath = path.join(process.cwd(), `json/output_chunk_${i + 1}.json`);
+        const outputFilePath = path.join(process.cwd(), `json/words_${i + 1}.json`);
         await fs.promises.writeFile(outputFilePath, JSON.stringify(outputChunks[i], null, 2));
         console.log(`Created ${outputFilePath}`);
     }
